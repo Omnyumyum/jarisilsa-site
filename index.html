@@ -51,13 +51,16 @@
   figure img { width: 100%; height: auto; display: block; border: 1px solid var(--line); background: var(--surface); }
   figcaption { font-size: 14px; color: var(--ink2); margin-top: 8px; }
   figcaption small { display: block; color: var(--ink3); font-size: 13px; }
-  .code { font-family: ui-monospace, Consolas, monospace; font-size: 13px; background: var(--bg); padding: 1px 6px; }
+  th, td { overflow-wrap: anywhere; }
+  .code { word-break: break-all; font-family: ui-monospace, Consolas, monospace; font-size: 13px; background: var(--bg); padding: 1px 6px; }
   .callout { border-left: 3px solid var(--accent); padding: 4px 0 4px 16px; margin: 24px 0 0; color: var(--ink2); }
   .callout strong { color: var(--accent); }
   footer { padding: 28px 0 48px; color: var(--ink3); font-size: 13px; }
   @media (max-width: 640px) {
     section { padding: 32px 0; }
-    .kv th { width: 38%; }
+    .kv, .kv tbody, .kv tr, .kv th, .kv td { display: block; width: auto; }
+    .kv th { padding: 12px 0 2px; border-bottom: 0; }
+    .kv td { padding: 0 0 12px; }
     th, td { padding: 10px 6px; }
     .hide-sm { display: none; }
   }
@@ -138,7 +141,7 @@
       <tr><th>사용 기능</th><td><span class="code">getBrTitleInfo</span> 표제부 — 주용도, 지상·지하 층수, 사용승인일<br><span class="code">getBrFlrOulnInfo</span> 층별개요 — 가게가 있는 층의 대장상 용도</td></tr>
       <tr><th>조회 방식</th><td>인허가 주소를 도로명주소 DB로 시군구·법정동·번·지로 바꾼 뒤, 건물마다 표제부 1회와 층별개요 1회 이상 조회</td></tr>
       <tr><th>호출 구조</th><td>서버에서 건물 단위로 받아 저장하고, 앱은 저장된 결과만 읽습니다. 앱 사용자가 늘어도 API 호출량은 늘지 않습니다.</td></tr>
-      <tr><th>필요 호출량</th><td class="num" style="text-align:left">서울 식품 업종 건물 약 108,000동 × 2회 ≈ <strong>약 216,000회</strong>(첫 적재)<br>이후 신규 개업 건물 추가와 주기 갱신</td></tr>
+      <tr><th>필요 호출량</th><td>서울 식품 업종 건물 약 108,000동 × 2회 ≈ <strong>약 216,000회</strong>(첫 적재)<br>이후 신규 개업 건물 추가와 주기 갱신</td></tr>
       <tr><th>현재 진행</th><td>강서구 4,237동 수집 완료(대장 확인 4,072동), 금천구 2,265동 수집 완료, 나머지 구는 일일 한도 안에서 순차 수집 중</td></tr>
     </table>
     <p class="callout"><strong>트래픽 확대가 필요한 이유</strong> — 개발계정 일일 한도로는 서울 전체 첫 적재에 2주 가까이 걸리고, 앱 공개 뒤에는 25개 구의 신규 건물과 대장 변경을 매일 반영해야 합니다.</p>
