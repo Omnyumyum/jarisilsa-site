@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="only light">
+<meta name="robots" content="noindex">
+<title>자리 리포트 — 자리실사</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  /* 앱과 같은 색: 먹색 글자, 종이색 바탕, 남색 하나(링크), 형광펜은 숨은 교체에만 */
+  :root { color-scheme: only light;
+    --paper: #F3F1EC; --surface: #FFFFFF; --ink: #17191E; --ink2: #454952; --ink3: #6E737C; --ink4: #A2A6AD;
+    --line: #E6E3DC; --navy: #2B3990; --hl: #FFD43B; --gray: #C9CCD1; --gray2: #9EA2AA;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink);
+    font-family: Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    font-size: 16px; line-height: 1.6; font-feature-settings: "tnum"; -webkit-font-smoothing: antialiased;
+    word-break: keep-all; overflow-wrap: anywhere; }
+  a { color: var(--navy); }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+  header.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+  header.top .wrap { display: flex; justify-content: space-between; align-items: center; height: 56px; }
+  .wordmark { font-weight: 700; font-size: 18px; color: var(--navy); text-decoration: none; }
+  .meta { font-size: 13px; color: var(--ink3); }
+  section { background: var(--surface); margin-top: 8px; padding: 22px 0; }
+  .addr { color: var(--ink3); font-size: 14px; margin: 0 0 8px; }
+  h1 { font-size: clamp(26px, 6vw, 34px); line-height: 1.25; margin: 0; letter-spacing: -0.03em; }
+  .sub { font-size: 20px; font-weight: 500; margin: 2px 0 0; }
+  .say { margin: 14px 0 0; font-size: 17px; }
+  mark { background: var(--hl); color: var(--ink); font-weight: 700; padding: 0 2px; }
+  .nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; }
+  .nums .l { color: var(--ink3); font-size: 13px; }
+  .nums .v { font-size: 24px; font-weight: 700; }
+  h2 { font-size: 19px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  .lead { margin: 0 0 14px; color: var(--ink); }
+  .lane { margin: 10px 0 2px; font-size: 14px; font-weight: 500; display: flex; justify-content: space-between; }
+  .bar { position: relative; height: 34px; background: var(--paper); border-radius: 4px; overflow: hidden; }
+  .seg { position: absolute; top: 0; bottom: 0; color: #fff; font-size: 12px; padding: 0 6px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; }
+  .seg.open { background: var(--ink); }
+  .seg.old1 { background: var(--gray2); color: var(--ink); }
+  .seg.old2 { background: var(--gray); color: var(--ink); }
+  .tick { position: absolute; top: 0; bottom: 0; width: 4px; background: var(--hl); }
+  .axis { display: flex; justify-content: space-between; color: var(--ink3); font-size: 12px; margin-top: 4px; }
+  .pair { margin: 12px 0; }
+  .pair .t { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .row { display: grid; grid-template-columns: 88px 1fr 64px; align-items: center; gap: 8px; font-size: 13px; color: var(--ink3); margin: 3px 0; }
+  .row .b { height: 10px; background: var(--gray); }
+  .row .b.strong { background: var(--ink); }
+  .row .n { color: var(--ink); text-align: right; }
+  .cols { display: flex; align-items: flex-end; gap: 10px; height: 120px; margin-top: 8px; }
+  .cols div { flex: 1; text-align: center; font-size: 12px; color: var(--ink3); display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+  .cols span.c { display: block; background: var(--gray); margin-top: 3px; }
+  .cols div.last span.c { background: var(--ink); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td { padding: 9px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td:last-child { text-align: right; color: var(--ink); }
+  td:first-child { color: var(--ink3); }
+  ul.check { padding-left: 18px; margin: 0; }
+  ul.check li { margin: 6px 0; }
+  .muted { color: var(--ink3); font-size: 13px; }
+  footer { padding: 20px 0 40px; color: var(--ink3); font-size: 13px; }
+  .err { padding: 40px 0; text-align: center; color: var(--ink3); }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="wordmark" href="./">자리실사</a><span class="meta">자리 이력 리포트</span></div></header>
+<main id="app"><div class="wrap err">리포트를 불러오는 중…</div></main>
+<footer><div class="wrap">공공데이터와 정보공개청구 자료로 만든 참고 통계입니다. 중개대상물 확인·설명 자료나 공적 증명서를 대신하지 않습니다. 상호는 일부를 가려 보여 줍니다.<br><a href="privacy.html">개인정보처리방침</a> · <a href="terms.html">이용약관</a></div></footer>
+<script>
+// 앱과 같은 공개 읽기 키(publishable, 읽기 전용·RLS). 리포트는 앱과 같은 값을 그대로 읽는다.
+const SUPABASE_URL = "https://vchgxiimzlynrxtlrrut.supabase.co";
+const KEY = "sb_publishable_DCDVKx4oisKtAi_QWjTTsA_TK8EpLAS";
+const $ = (h) => { const t = document.createElement("template"); t.innerHTML = h.trim(); return t.content; };
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (n) => Number(n).toLocaleString("ko-KR");
+const yrs = (d) => { const y = Math.floor(d / 365.25), m = Math.floor((d % 365.25) / 30.44); return y ? `${y}년${m ? " " + m + "개월" : ""}` : `${m}개월`; };
+const day = (s) => s ? new Date(s + "T00:00:00").getTime() / 864e5 : null;
+
+function lanes(r) {
+  const shops = r.shops || [];
+  const bySlot = new Map();
+  shops.forEach((s) => { const k = s.slot ?? s.shop_no; if (!bySlot.has(k)) bySlot.set(k, []); bySlot.get(k).push(s); });
+  return [...bySlot.entries()].sort((a, b) => a[0] - b[0]).map(([k, list]) => ({ slot: k, shops: list.sort((a, b) => a.start.localeCompare(b.start)) }));
+}
+
+function timeline(r) {
+  const ls = lanes(r);
+  if (!ls.length) return "";
+  const end = day(r.as_of);
+  const first = Math.min(...(r.shops || []).map((s) => day(s.start)));
+  const y0 = new Date(first * 864e5).getFullYear();
+  const start = day(`${y0}-01-01`);
+  const pct = (d) => ((d - start) / (end - start)) * 100;
+  const hidden = (r.timeline?.periods || []).filter((p) => p.owner_no >= 2);
+  let html = "";
+  ls.forEach((lane) => {
+    const area = lane.shops.find((s) => s.area_m2)?.area_m2;
+    const open = lane.shops.some((s) => s.open);
+    html += `<div class="lane"><span>${ls.length > 1 ? `점포 ${lane.slot}` : "이 자리"}${area ? ` · 약 ${Math.round(area)}㎡` : ""}</span><span>${open ? "영업 중" : "비어 있음"}</span></div><div class="bar">`;
+    lane.shops.forEach((s, i) => {
+      const a = pct(day(s.start)), b = pct(s.end ? day(s.end) : end);
+      const cls = s.open ? "open" : (i % 2 ? "old2" : "old1");
+      const label = `${esc(s.category_name || s.biz_type || "")} ${(s.tenure_days / 365.25).toFixed(1)}년`;
+      html += `<div class="seg ${cls}" style="left:${a}%;width:${Math.max(b - a, 0.6)}%">${b - a > 12 ? label : ""}</div>`;
+      hidden.filter((p) => p.shop_no === s.shop_no).forEach((p) => { html += `<div class="tick" style="left:${pct(day(p.start))}%"></div>`; });
+    });
+    html += `</div>`;
+  });
+  html += `<div class="axis"><span>${y0}</span><span>지금</span></div>`;
+  return html;
+}
+
+function pairs(r) {
+  const s = r.summary, b = r.baseline;
+  if (!s || !b) return "";
+  const shared = (r.spot.max_open_shops || 1) >= 4 || !!r.timeline?.succession_periods;
+  const items = [];
+  if (b.avg_tenure_years != null) items.push(["평균 영업 기간", s.avg_tenure_years, b.avg_tenure_years, (v) => v.toFixed(1) + "년", "중간값"]);
+  if (!shared && b.hidden_share != null && s.turnovers > 0) items.push(["교체 중 주인만 바뀐 비율", s.hidden_successions / s.turnovers, b.hidden_share, (v) => Math.round(v * 100) + "%", "중간값"]);
+  if (!items.length) return "";
+  let html = `<p class="lead">${esc(b.gu)} 자리 ${fmt(b.spots)}곳과 비교</p>`;
+  items.forEach(([t, here, base, f, kind]) => {
+    const max = Math.max(here, base) || 1;
+    html += `<div class="pair"><div class="t">${t}</div>
+      <div class="row"><span>이 자리</span><span class="b strong" style="width:${Math.max(here / max * 100, 2)}%"></span><span class="n"><b>${f(here)}</b></span></div>
+      <div class="row"><span>${esc(b.gu)} ${kind}</span><span class="b" style="width:${Math.max(base / max * 100, 2)}%"></span><span class="n">${f(base)}</span></div></div>`;
+  });
+  return html;
+}
+
+function nearby(r) {
+  const nb = r.context?.nearby;
+  if (!nb || nb.same_type_open == null) return "";
+  const m = nb.monthly || [];
+  const max = Math.max(...m.map((x) => x.open), 1), min = Math.min(...m.map((x) => x.open));
+  const floor = Math.floor(min * 0.8);
+  let cols = m.map((x, i) => `<div class="${i === m.length - 1 ? "last" : ""}"><b>${x.open}</b><span class="c" style="height:${Math.max((x.open - floor) / Math.max(max - floor, 1) * 84, 3)}px"></span>${i === m.length - 1 ? "지금" : Number(x.month.slice(5)) + "월"}</div>`).join("");
+  const sh = nb.share || {};
+  return `<h2>동네 경쟁</h2><p class="lead">반경 ${nb.radius_m}m ${esc(nb.basis || "같은 업종")} 지금 <b>${fmt(nb.same_type_open)}곳</b></p>
+    ${m.length > 1 ? `<div class="cols">${cols}</div><p class="muted">막대 바닥 ${fmt(floor)}곳 · 달 말 영업 중</p>` : ""}
+    <table>
+      ${sh.here != null ? `<tr><td>업종 비율(영업 중 음식점 중)</td><td>${(sh.here * 100).toFixed(1)}%${sh.seoul != null ? ` · 서울 ${(sh.seoul * 100).toFixed(1)}%` : ""}</td></tr>` : ""}
+      <tr><td>최근 ${nb.years}년 같은 업종 개업 · 폐업</td><td>${fmt(nb.same_type_opened)}곳 · ${fmt(nb.same_type_closed)}곳</td></tr>
+    </table>`;
+}
+
+function render(r) {
+  const s = r.summary || {}, spot = r.spot;
+  const floor = spot.floor_label || "";
+  const hidden = Math.max(s.hidden_successions || 0, (r.timeline?.succession_periods || []).reduce((a, p) => a + (p.count || 0), 0));
+  const shared = (spot.max_open_shops || 1) >= 4;
+  const shops = s.shops ?? s.occupants ?? (r.shops || []).length;
+  const sc = r.sanctions;
+  const checks = (r.checklist || []).slice(0, 5);
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+  app.append($(`
+  <section><div class="wrap">
+    <p class="addr">${esc(spot.road_address)} · ${esc(floor)}</p>
+    <h1>최근 10년 가게 ${fmt(shops)}곳</h1>
+    <p class="sub">${spot.open_shops ? `지금 ${spot.open_shops}곳 영업 중` : "지금 영업 중인 가게 없음"}</p>
+    ${!shared && hidden > 0 ? `<p class="say">가게는 그대로인데 주인만 바뀐 때가 <mark>${hidden}번</mark> 있어요.</p>` : ""}
+    ${shared ? `<p class="say">같은 층에 가게가 최대 ${spot.max_open_shops}곳 함께 영업한 층이에요.</p>` : `
+    <div class="nums">
+      <div><div class="l">공개 데이터상 교체</div><div class="v">${fmt(s.public_turnovers ?? 0)}회</div></div>
+      <div><div class="l">숨은 교체 포함</div><div class="v">${hidden > 0 ? `<mark>${fmt(s.turnovers ?? 0)}회</mark>` : `${fmt(s.turnovers ?? 0)}회`}</div></div>
+      <div><div class="l">평균 영업 기간</div><div class="v">${s.avg_tenure_years != null ? s.avg_tenure_years.toFixed(1) + "년" : "-"}</div></div>
+    </div>`}
+  </div></section>
+  <section><div class="wrap"><h2>교체 기록</h2>${timeline(r)}<p class="muted">먹색 지금 영업 중 · 회색 앞 가게 · 노란 표시 주인만 바뀜</p>${pairs(r)}</div></section>
+  <section><div class="wrap">${nearby(r)}</div></section>
+  <section><div class="wrap"><h2>위생 처분</h2><p class="lead">${sc ? (sc.spot_total ? `이 자리 처분 ${sc.spot_total}건${sc.current_shop ? ` · 지금 가게 ${sc.current_shop.count}건 · 인수 시 따라옴 ${sc.current_shop.inheritable_1y}건` : ""}` : "확인된 처분 없음") : "자료 없음"}</p></div></section>
+  ${checks.length ? `<section><div class="wrap"><h2>계약 전에 꼭 볼 것</h2><ul class="check">${checks.map((c) => `<li><b>${esc(c.title)}</b> — ${esc(c.detail)}</li>`).join("")}</ul></div></section>` : ""}
+  <section><div class="wrap"><p class="muted">기준일 ${esc(r.as_of)} · 출처: ${(r.sources || []).map((x) => esc(x.name)).join(" · ")}<br>${esc(r.notice || "")}<br>자세한 기록·PDF는 자리실사 앱에서 볼 수 있어요.</p></div></section>`));
+  document.title = `${spot.road_address} ${floor} — 자리실사`;
+}
+
+(async () => {
+  const k = new URLSearchParams(location.search).get("k");
+  const app = document.getElementById("app");
+  if (!k) { app.innerHTML = `<div class="wrap err">자리 주소가 없는 링크예요. 앱에서 다시 공유해 주세요.</div>`; return; }
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/spot_reports?select=report&spot_key=eq.${encodeURIComponent(k)}`, { headers: { apikey: KEY } });
+    const rows = await res.json();
+    if (!res.ok || !rows.length || !rows[0].report) { app.innerHTML = `<div class="wrap err">이 자리 리포트를 찾지 못했어요. 주소가 바뀌었거나 아직 없는 자리예요.</div>`; return; }
+    render(rows[0].report);
+  } catch (e) {
+    app.innerHTML = `<div class="wrap err">리포트를 불러오지 못했어요. 잠시 뒤 다시 열어 주세요.</div>`;
+  }
+})();
+</script>
+</body>
+</html>
