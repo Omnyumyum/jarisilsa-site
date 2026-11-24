@@ -8,71 +8,102 @@
 <title>자리 리포트 — 자리실사</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
-  /* 앱과 같은 색: 먹색 글자, 종이색 바탕, 남색 하나(링크), 형광펜은 숨은 교체에만 */
+  /* 앱과 같은 색: 먹색 머리판과 글자, 안개색 바탕 위 둥근 흰 판, 초록은 지금 영업 중·이 자리 값에만, 형광펜은 제목의 '주인만 N번' 한 곳에만 */
   :root { color-scheme: only light;
-    --paper: #F3F1EC; --surface: #FFFFFF; --ink: #17191E; --ink2: #454952; --ink3: #6E737C; --ink4: #A2A6AD;
-    --line: #E6E3DC; --navy: #2B3990; --hl: #FFD43B; --gray: #C9CCD1; --gray2: #9EA2AA;
+    --fog: #EEF1F4; --surface: #FFFFFF; --ink: #22262E; --ink2: #454B57; --ink3: #5B6270;
+    --line: #E3E7EC; --green: #2F7D6B; --hl: #FFD84D; --gray: #C9CED6; --gray2: #A9AFB9; --onink: #C5CAD3;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--paper); color: var(--ink);
+  body { margin: 0; background: var(--fog); color: var(--ink);
     font-family: Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     font-size: 16px; line-height: 1.6; font-feature-settings: "tnum"; -webkit-font-smoothing: antialiased;
     word-break: keep-all; overflow-wrap: anywhere; }
-  a { color: var(--navy); }
+  a { color: var(--ink); }
   .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
-  header.top { background: var(--surface); border-bottom: 1px solid var(--line); }
-  header.top .wrap { display: flex; justify-content: space-between; align-items: center; height: 56px; }
-  .wordmark { font-weight: 700; font-size: 18px; color: var(--navy); text-decoration: none; }
-  .meta { font-size: 13px; color: var(--ink3); }
+
+  /* 먹색 머리판: 주소 줄 → 작은 줄 → 제목 */
+  header.ink { background: var(--ink); color: #fff; border-radius: 0 0 28px 28px; padding-bottom: 26px; }
+  .topline { display: flex; justify-content: space-between; align-items: center; height: 56px; }
+  .wordmark { font-weight: 700; font-size: 17px; color: #fff; text-decoration: none; }
+  .meta { font-size: 13px; color: var(--onink); }
   /* 앱에서 열기: 안드로이드에서만 보인다(누르는 영역 44px) */
-  .openapp { display: inline-flex; align-items: center; height: 44px; padding: 0 2px; font-size: 14px; font-weight: 600; color: var(--navy); text-decoration: none; }
-  .openapp[hidden] { display: none; }
-  .noapp { background: var(--surface); border-bottom: 1px solid var(--line); padding: 10px 0; color: var(--ink2); font-size: 14px; }
-  .noapp[hidden] { display: none; }
-  section { background: var(--surface); margin-top: 8px; padding: 22px 0; }
-  .addr { color: var(--ink3); font-size: 14px; margin: 0 0 8px; }
-  h1 { font-size: clamp(26px, 6vw, 34px); line-height: 1.25; margin: 0; letter-spacing: -0.03em; }
-  .sub { font-size: 20px; font-weight: 500; margin: 2px 0 0; }
-  .say { margin: 14px 0 0; font-size: 17px; }
-  mark { background: var(--hl); color: var(--ink); font-weight: 700; padding: 0 2px; }
-  .nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; }
+  .openapp { display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border: 1px solid rgba(255,255,255,.45); border-radius: 22px; font-size: 14px; font-weight: 600; color: #fff; text-decoration: none; }
+  .openapp[hidden], .meta[hidden], .noapp[hidden] { display: none; }
+  .addr { color: var(--onink); font-size: 14px; margin: 6px 0 10px; }
+  .sub { color: var(--onink); font-size: 15px; margin: 0 0 4px; }
+  h1 { font-size: clamp(24px, 6vw, 30px); line-height: 1.32; margin: 0; letter-spacing: -0.03em; font-weight: 700; }
+  mark { background: var(--hl); color: var(--ink); padding: 0 4px; border-radius: 4px; }
+
+  /* 본문: 안개색 바탕 위 둥근 흰 판 */
+  main { padding: 12px 0 4px; }
+  .card { background: var(--surface); border-radius: 24px; padding: 22px 20px; margin: 0 0 12px; }
+  .noapp { color: var(--ink2); font-size: 14px; }
+  .nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 22px; }
   .nums .l { color: var(--ink3); font-size: 13px; }
-  .nums .v { font-size: 24px; font-weight: 700; }
-  h2 { font-size: 19px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  .nums .v { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+  h2 { font-size: 18px; margin: 0 0 4px; letter-spacing: -0.02em; font-weight: 700; }
   .lead { margin: 0 0 14px; color: var(--ink); }
-  .lane { margin: 10px 0 2px; font-size: 14px; font-weight: 500; display: flex; justify-content: space-between; }
-  .bar { position: relative; height: 34px; background: var(--paper); border-radius: 4px; overflow: hidden; }
-  .seg { position: absolute; top: 0; bottom: 0; color: #fff; font-size: 12px; padding: 0 6px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; }
-  .seg.open { background: var(--ink); }
+  .lead b { font-weight: 700; }
+
+  /* 기간 막대: 지금 영업 중만 초록, 앞 가게 회색, 빈 곳이 공실. 노란 표는 막대 아래쪽 3분의 1에만 그어 글자를 가로지르지 않는다 */
+  .lane { margin: 12px 0 4px; font-size: 14px; font-weight: 500; display: flex; justify-content: space-between; }
+  .lane span:last-child { color: var(--ink3); font-weight: 400; }
+  .bar { position: relative; height: 46px; background: var(--fog); border-radius: 10px; overflow: hidden; }
+  .seg { position: absolute; top: 0; bottom: 0; font-size: 12px; line-height: 31px; padding: 0 8px; white-space: nowrap; overflow: hidden; }
+  .seg.open { background: var(--green); color: #fff; }
   .seg.old1 { background: var(--gray2); color: var(--ink); }
   .seg.old2 { background: var(--gray); color: var(--ink); }
-  .tick { position: absolute; top: 0; bottom: 0; width: 4px; background: var(--hl); }
-  .axis { display: flex; justify-content: space-between; color: var(--ink3); font-size: 12px; margin-top: 4px; }
-  .pair { margin: 12px 0; }
-  .pair .t { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
-  .row { display: grid; grid-template-columns: 88px 1fr 64px; align-items: center; gap: 8px; font-size: 13px; color: var(--ink3); margin: 3px 0; }
-  .row .b { height: 10px; background: var(--gray); }
-  .row .b.strong { background: var(--ink); }
-  .row .n { color: var(--ink); text-align: right; }
-  .cols { display: flex; align-items: flex-end; gap: 10px; height: 120px; margin-top: 8px; }
+  .tick { position: absolute; top: 68%; bottom: 0; width: 4px; margin-left: -2px; background: var(--hl); border-radius: 2px 2px 0 0; }
+  .axis { display: flex; justify-content: space-between; color: var(--ink3); font-size: 12px; margin-top: 6px; }
+  .muted { color: var(--ink3); font-size: 13px; margin: 10px 0 0; }
+  .say { margin: 12px 0 0; font-size: 15px; color: var(--ink2); }
+
+  /* 견주기: 이 자리 초록, 견주는 값 회색 */
+  .pair { margin: 16px 0 0; }
+  .pair .t { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .row { display: grid; grid-template-columns: 76px 1fr 56px; align-items: center; gap: 8px; font-size: 13px; color: var(--ink3); margin: 5px 0; }
+  .row .b { height: 10px; background: var(--gray); border-radius: 5px; }
+  .row .b.here { background: var(--green); }
+  .row .n { color: var(--ink2); text-align: right; }
+  .row .n b { color: var(--ink); }
+  .cols { display: flex; align-items: flex-end; gap: 8px; height: 124px; margin-top: 8px; }
   .cols div { flex: 1; text-align: center; font-size: 12px; color: var(--ink3); display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
-  .cols span.c { display: block; background: var(--gray); margin-top: 3px; }
-  .cols div.last span.c { background: var(--ink); }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  td { padding: 9px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .cols b { font-weight: 500; color: var(--ink2); }
+  .cols span.c { display: block; background: var(--gray); margin: 3px 0; border-radius: 5px 5px 0 0; }
+  .cols div.last span.c { background: var(--green); }
+  .cols div.last b { color: var(--ink); font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; }
+  td { padding: 10px 0; border-top: 1px solid var(--line); vertical-align: top; }
   td:last-child { text-align: right; color: var(--ink); }
   td:first-child { color: var(--ink3); }
-  ul.check { padding-left: 18px; margin: 0; }
-  ul.check li { margin: 6px 0; }
-  .muted { color: var(--ink3); font-size: 13px; }
-  footer { padding: 20px 0 40px; color: var(--ink3); font-size: 13px; }
-  .err { padding: 40px 0; text-align: center; color: var(--ink3); }
+
+  /* 눌러서 펴는 줄 */
+  details { border-top: 1px solid var(--line); }
+  details:first-of-type { border-top: 0; }
+  details.more { border-top: 0; margin-top: 8px; }
+  details.more[open] summary { display: none; }
+  summary { list-style: none; cursor: pointer; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 15px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: ""; flex: none; width: 8px; height: 8px; border-right: 1.5px solid var(--ink3); border-bottom: 1.5px solid var(--ink3); transform: rotate(45deg); margin: 0 6px 4px 0; }
+  details[open] summary::after { transform: rotate(-135deg); margin-bottom: -4px; }
+  summary.warn { font-weight: 700; }
+  summary.warn span::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 3px; background: var(--ink); margin: 0 8px 3px 0; }
+  details p { margin: 0 0 14px; color: var(--ink2); font-size: 14px; }
+  .foot summary { color: var(--ink3); font-size: 13px; }
+  footer { padding: 8px 0 40px; color: var(--ink3); font-size: 13px; }
+  footer a { color: var(--ink3); }
+  .err { text-align: center; color: var(--ink3); padding: 28px 20px; }
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap"><a class="wordmark" href="./">자리실사</a><span class="meta" id="meta">자리 이력 리포트</span><a class="openapp" id="openapp" hidden>앱에서 열기</a></div></header>
-<div class="noapp" id="noapp" hidden><div class="wrap">자리실사 앱이 설치돼 있지 않아 웹에서 보여 드려요.</div></div>
-<main id="app"><div class="wrap err">리포트를 불러오는 중…</div></main>
+<header class="ink"><div class="wrap">
+  <div class="topline"><a class="wordmark" href="./">자리실사</a><span class="meta" id="meta">자리 이력 리포트</span><a class="openapp" id="openapp" hidden>앱에서 열기</a></div>
+  <div id="head"></div>
+</div></header>
+<main><div class="wrap">
+  <div class="card noapp" id="noapp" hidden>자리실사 앱이 설치돼 있지 않아 웹에서 보여 드려요.</div>
+  <div id="app"><div class="card err">리포트를 불러오는 중…</div></div>
+</div></main>
 <footer><div class="wrap">공공데이터와 정보공개청구 자료로 만든 참고 통계입니다. 중개대상물 확인·설명 자료나 공적 증명서를 대신하지 않습니다. 상호는 일부를 가려 보여 줍니다.<br><a href="privacy.html">개인정보처리방침</a> · <a href="terms.html">이용약관</a></div></footer>
 <script>
 // 앱과 같은 공개 읽기 키(publishable, 읽기 전용·RLS). 리포트는 앱과 같은 값을 그대로 읽는다.
@@ -81,13 +112,22 @@ const KEY = "sb_publishable_DCDVKx4oisKtAi_QWjTTsA_TK8EpLAS";
 const $ = (h) => { const t = document.createElement("template"); t.innerHTML = h.trim(); return t.content; };
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const fmt = (n) => Number(n).toLocaleString("ko-KR");
-const yrs = (d) => { const y = Math.floor(d / 365.25), m = Math.floor((d % 365.25) / 30.44); return y ? `${y}년${m ? " " + m + "개월" : ""}` : `${m}개월`; };
 const day = (s) => s ? new Date(s + "T00:00:00").getTime() / 864e5 : null;
+// 한 층에 가게가 4곳 넘게 함께 영업한 층은 교체 숫자 대신 가게 수만 말한다(앱과 같은 기준)
+const isShared = (r) => (r.spot.max_open_shops || 1) >= 4;
+
+// 주인만 바뀐 횟수: 요약 숫자와 같은 최근 N년(recent)과 그 전(earlier)으로 가른다 — 앱의 hiddenChanges와 같은 계산
+function hiddenChanges(r) {
+  const s = r.summary, t = r.timeline || {};
+  const periods = t.succession_periods;
+  const all = Math.max(s?.hidden_successions || 0, (t.periods || []).filter((p) => p.owner_no >= 2).length, (periods || []).reduce((a, p) => a + (p.count || 0), 0));
+  const recent = (!s || periods) ? all : Math.min(Math.max(s.hidden_successions || 0, 0), all);
+  return { recent, earlier: all - recent, years: s?.years || 10 };
+}
 
 function lanes(r) {
-  const shops = r.shops || [];
   const bySlot = new Map();
-  shops.forEach((s) => { const k = s.slot ?? s.shop_no; if (!bySlot.has(k)) bySlot.set(k, []); bySlot.get(k).push(s); });
+  (r.shops || []).forEach((s) => { const k = s.slot ?? s.shop_no; if (!bySlot.has(k)) bySlot.set(k, []); bySlot.get(k).push(s); });
   return [...bySlot.entries()].sort((a, b) => a[0] - b[0]).map(([k, list]) => ({ slot: k, shops: list.sort((a, b) => a.start.localeCompare(b.start)) }));
 }
 
@@ -100,20 +140,26 @@ function timeline(r) {
   const start = day(`${y0}-01-01`);
   const pct = (d) => ((d - start) / (end - start)) * 100;
   const hidden = (r.timeline?.periods || []).filter((p) => p.owner_no >= 2);
+  // 점포가 많은 층은 8곳만 바로 보이고 나머지는 눌러서 편다(앱·PDF와 같은 수)
+  const VISIBLE = 8;
   let html = "";
-  ls.forEach((lane) => {
+  ls.forEach((lane, li) => {
+    if (li === VISIBLE) html += `<details class="more"><summary><span>나머지 점포 ${ls.length - VISIBLE}곳 더 보기</span></summary>`;
     const area = lane.shops.find((s) => s.area_m2)?.area_m2;
     const open = lane.shops.some((s) => s.open);
-    html += `<div class="lane"><span>${ls.length > 1 ? `점포 ${lane.slot}` : "이 자리"}${area ? ` · 약 ${Math.round(area)}㎡` : ""}</span><span>${open ? "영업 중" : "비어 있음"}</span></div><div class="bar">`;
+    const marks = hidden.filter((p) => lane.shops.some((s) => s.shop_no === p.shop_no)).length;
+    const label = `거쳐 간 가게 ${lane.shops.length}곳${marks ? `, 주인만 바뀐 때 ${marks}번` : ""}, ${open ? "지금 영업 중" : "지금 비어 있음"}`;
+    html += `<div class="lane"><span>${ls.length > 1 ? `점포 ${lane.slot}` : "이 자리"}${area ? ` · 약 ${Math.round(area)}㎡` : ""}</span><span>${open ? "영업 중" : "비어 있음"}</span></div><div class="bar" role="img" aria-label="${esc(label)}">`;
     lane.shops.forEach((s, i) => {
       const a = pct(day(s.start)), b = pct(s.end ? day(s.end) : end);
       const cls = s.open ? "open" : (i % 2 ? "old2" : "old1");
-      const label = `${esc(s.category_name || s.biz_type || "")} ${(s.tenure_days / 365.25).toFixed(1)}년`;
-      html += `<div class="seg ${cls}" style="left:${a}%;width:${Math.max(b - a, 0.6)}%">${b - a > 12 ? label : ""}</div>`;
+      const text = `${esc(s.category_name || s.biz_type || "")} ${(s.tenure_days / 365.25).toFixed(1)}년`;
+      html += `<div class="seg ${cls}" style="left:${a}%;width:${Math.max(b - a, 0.6)}%">${b - a > 14 ? text : ""}</div>`;
       hidden.filter((p) => p.shop_no === s.shop_no).forEach((p) => { html += `<div class="tick" style="left:${pct(day(p.start))}%"></div>`; });
     });
     html += `</div>`;
   });
+  if (ls.length > VISIBLE) html += `</details>`;
   html += `<div class="axis"><span>${y0}</span><span>지금</span></div>`;
   return html;
 }
@@ -121,19 +167,21 @@ function timeline(r) {
 function pairs(r) {
   const s = r.summary, b = r.baseline;
   if (!s || !b) return "";
-  const shared = (r.spot.max_open_shops || 1) >= 4 || !!r.timeline?.succession_periods;
+  const shared = isShared(r) || !!r.timeline?.succession_periods;
   const items = [];
-  if (b.avg_tenure_years != null) items.push(["평균 영업 기간", s.avg_tenure_years, b.avg_tenure_years, (v) => v.toFixed(1) + "년", "중간값"]);
-  if (!shared && b.hidden_share != null && s.turnovers > 0) items.push(["교체 중 주인만 바뀐 비율", s.hidden_successions / s.turnovers, b.hidden_share, (v) => Math.round(v * 100) + "%", "중간값"]);
+  // 견주는 줄: 동(30곳 넘을 때만) → 구 → 서울
+  const others = (pick) => [b.dong && b.dong.spots >= 30 ? [b.dong.name, pick(b.dong)] : null, [b.gu, pick(b)], b.seoul ? [b.seoul.name || "서울", pick(b.seoul)] : null].filter((x) => x && x[1] != null);
+  if (b.avg_tenure_years != null && s.avg_tenure_years != null) items.push(["평균 영업 기간", s.avg_tenure_years, others((x) => x.avg_tenure_years), (v) => v.toFixed(1) + "년"]);
+  if (!shared && b.hidden_share != null && s.turnovers > 0) items.push(["교체 중 주인만 바뀐 비율", s.hidden_successions / s.turnovers, others((x) => x.hidden_share), (v) => Math.round(v * 100) + "%"]);
   if (!items.length) return "";
-  let html = `<p class="lead">${esc(b.gu)} 자리 ${fmt(b.spots)}곳과 비교</p>`;
-  items.forEach(([t, here, base, f, kind]) => {
-    const max = Math.max(here, base) || 1;
+  let html = `<h2>다른 자리와 견주기</h2><p class="lead">${esc(b.gu)} 자리 ${fmt(b.spots)}곳과 견준 값이에요.</p>`;
+  items.forEach(([t, here, rest, f]) => {
+    const max = Math.max(here, ...rest.map((x) => x[1])) || 1;
     html += `<div class="pair"><div class="t">${t}</div>
-      <div class="row"><span>이 자리</span><span class="b strong" style="width:${Math.max(here / max * 100, 2)}%"></span><span class="n"><b>${f(here)}</b></span></div>
-      <div class="row"><span>${esc(b.gu)} ${kind}</span><span class="b" style="width:${Math.max(base / max * 100, 2)}%"></span><span class="n">${f(base)}</span></div></div>`;
+      <div class="row"><span>이 자리</span><span class="b here" style="width:${Math.max(here / max * 100, 2)}%"></span><span class="n"><b>${f(here)}</b></span></div>
+      ${rest.map(([name, v]) => `<div class="row"><span>${esc(name)}</span><span class="b" style="width:${Math.max(v / max * 100, 2)}%"></span><span class="n">${f(v)}</span></div>`).join("")}</div>`;
   });
-  return html;
+  return html + `<p class="muted">초록 막대가 이 자리, 회색은 견주는 값(중간값·전체 비율)이에요.</p>`;
 }
 
 function nearby(r) {
@@ -142,51 +190,67 @@ function nearby(r) {
   const m = nb.monthly || [];
   const max = Math.max(...m.map((x) => x.open), 1), min = Math.min(...m.map((x) => x.open));
   const floor = Math.floor(min * 0.8);
-  let cols = m.map((x, i) => `<div class="${i === m.length - 1 ? "last" : ""}"><b>${x.open}</b><span class="c" style="height:${Math.max((x.open - floor) / Math.max(max - floor, 1) * 84, 3)}px"></span>${i === m.length - 1 ? "지금" : Number(x.month.slice(5)) + "월"}</div>`).join("");
+  const cols = m.map((x, i) => `<div class="${i === m.length - 1 ? "last" : ""}"><b>${x.open}</b><span class="c" style="height:${Math.max((x.open - floor) / Math.max(max - floor, 1) * 84, 3)}px"></span>${i === m.length - 1 ? "지금" : Number(x.month.slice(5)) + "월"}</div>`).join("");
   const sh = nb.share || {};
-  return `<h2>동네 경쟁</h2><p class="lead">반경 ${nb.radius_m}m ${esc(nb.basis || "같은 업종")} 지금 <b>${fmt(nb.same_type_open)}곳</b></p>
+  return `<div class="card"><h2>동네 경쟁</h2><p class="lead">반경 ${nb.radius_m}m ${esc(nb.basis || "같은 업종")} 지금 <b>${fmt(nb.same_type_open)}곳</b></p>
     ${m.length > 1 ? `<div class="cols">${cols}</div><p class="muted">막대 바닥 ${fmt(floor)}곳 · 달 말 영업 중</p>` : ""}
     <table>
       ${sh.here != null ? `<tr><td>업종 비율(영업 중 음식점 중)</td><td>${(sh.here * 100).toFixed(1)}%${sh.seoul != null ? ` · 서울 ${(sh.seoul * 100).toFixed(1)}%` : ""}</td></tr>` : ""}
       <tr><td>최근 ${nb.years}년 같은 업종 개업 · 폐업</td><td>${fmt(nb.same_type_opened)}곳 · ${fmt(nb.same_type_closed)}곳</td></tr>
-    </table>`;
+    </table></div>`;
 }
 
 function render(r) {
   const s = r.summary || {}, spot = r.spot;
   const floor = spot.floor_label || "";
-  const hidden = Math.max(s.hidden_successions || 0, (r.timeline?.succession_periods || []).reduce((a, p) => a + (p.count || 0), 0));
-  const shared = (spot.max_open_shops || 1) >= 4;
+  const shared = isShared(r);
+  const hc = hiddenChanges(r);
   const shops = s.shops ?? s.occupants ?? (r.shops || []).length;
+  const heroTitle = `최근 ${hc.years}년 가게 ${fmt(shops)}곳`;
+  const status = spot.open_shops ? `지금 ${spot.open_shops}곳 영업 중` : "지금 영업 중인 가게 없음";
   const sc = r.sanctions;
   const checks = (r.checklist || []).slice(0, 5);
+  const sources = r.sources || [];
+
+  // 머리판: 주인만 바뀐 때가 있으면 그 횟수가 제목(형광펜은 여기 한 곳), 없거나 큰 층이면 가게 수와 영업 여부
+  const address = String(spot.road_address || "").replace(/^서울특별시 /, "");
+  const head = document.getElementById("head");
+  head.innerHTML = "";
+  head.append($(`<p class="addr">${esc(address)} · ${esc(floor)}</p>` + (!shared && hc.recent > 0
+    ? `<p class="sub">${heroTitle}, ${status}</p><h1>가게는 그대로인데<br>주인만 <mark>${hc.recent}번</mark> 바뀌었어요</h1>`
+    : `<h1>${heroTitle},<br>${status}</h1>`)));
+
   const app = document.getElementById("app");
   app.innerHTML = "";
   app.append($(`
-  <section><div class="wrap">
-    <p class="addr">${esc(spot.road_address)} · ${esc(floor)}</p>
-    <h1>최근 10년 가게 ${fmt(shops)}곳</h1>
-    <p class="sub">${spot.open_shops ? `지금 ${spot.open_shops}곳 영업 중` : "지금 영업 중인 가게 없음"}</p>
-    ${!shared && hidden > 0 ? `<p class="say">가게는 그대로인데 주인만 바뀐 때가 <mark>${hidden}번</mark> 있어요.</p>` : ""}
-    ${shared ? `<p class="say">같은 층에 가게가 최대 ${spot.max_open_shops}곳 함께 영업한 층이에요.</p>` : `
+  <div class="card">
+    ${shared ? `<p class="lead">같은 층에 가게가 최대 ${spot.max_open_shops}곳 함께 영업한 층이에요.</p>` : `
     <div class="nums">
-      <div><div class="l">공개 데이터상 교체</div><div class="v">${fmt(s.public_turnovers ?? 0)}회</div></div>
-      <div><div class="l">숨은 교체 포함</div><div class="v">${hidden > 0 ? `<mark>${fmt(s.turnovers ?? 0)}회</mark>` : `${fmt(s.turnovers ?? 0)}회`}</div></div>
+      <div><div class="l">공개 교체</div><div class="v">${fmt(s.public_turnovers ?? 0)}회</div></div>
+      <div><div class="l">실제 교체</div><div class="v">${fmt(s.turnovers ?? 0)}회</div></div>
       <div><div class="l">평균 영업 기간</div><div class="v">${s.avg_tenure_years != null ? s.avg_tenure_years.toFixed(1) + "년" : "-"}</div></div>
     </div>`}
-  </div></section>
-  <section><div class="wrap"><h2>교체 기록</h2>${timeline(r)}<p class="muted">먹색 지금 영업 중 · 회색 앞 가게 · 노란 표시 주인만 바뀜</p>${pairs(r)}</div></section>
-  <section><div class="wrap">${nearby(r)}</div></section>
-  <section><div class="wrap"><h2>위생 처분</h2><p class="lead">${sc ? (sc.spot_total ? `이 자리 처분 ${sc.spot_total}건${sc.current_shop ? ` · 지금 가게 ${sc.current_shop.count}건 · 인수 시 따라옴 ${sc.current_shop.inheritable_1y}건` : ""}` : "확인된 처분 없음") : "자료 없음"}</p></div></section>
-  ${checks.length ? `<section><div class="wrap"><h2>계약 전에 꼭 볼 것</h2><ul class="check">${checks.map((c) => `<li><b>${esc(c.title)}</b> — ${esc(c.detail)}</li>`).join("")}</ul></div></section>` : ""}
-  <section><div class="wrap"><p class="muted">기준일 ${esc(r.as_of)} · 출처: ${(r.sources || []).map((x) => esc(x.name)).join(" · ")}<br>${esc(r.notice || "")}<br>자세한 기록·PDF는 자리실사 앱에서 볼 수 있어요.</p></div></section>`));
-  document.title = `${spot.road_address} ${floor} — 자리실사`;
+    <h2>교체 기록</h2>
+    ${timeline(r)}
+    <p class="muted">초록 지금 영업 중 · 회색 앞 가게 · 아래 노란 표 주인만 바뀐 때 · 빈 곳 공실</p>
+    ${!shared && hc.earlier > 0 ? `<p class="say">주인만 바뀐 때는 최근 ${hc.years}년에 ${hc.recent}번, 그 전에 ${hc.earlier}번 있어요.</p>` : ""}
+  </div>
+  ${pairs(r) ? `<div class="card">${pairs(r)}</div>` : ""}
+  ${nearby(r)}
+  <div class="card"><h2>행정처분</h2><p class="lead" style="margin:0">${sc ? (sc.spot_total ? `이 자리 처분 ${sc.spot_total}건${sc.current_shop ? ` · 지금 가게 ${sc.current_shop.count}건 · 넘겨받으면 이어지는 처분 ${sc.current_shop.inheritable_1y}건` : ""}` : "확인된 처분 없음") : "자료 없음"}</p></div>
+  ${checks.length ? `<div class="card"><h2>계약 전에 꼭 볼 것</h2>${checks.map((c) => `<details><summary${c.level && c.level !== "check" ? ' class="warn"' : ""}><span>${esc(c.title)}</span></summary><p>${esc(c.detail)}</p></details>`).join("")}</div>` : ""}
+  <div class="card foot">
+    <details><summary><span>법적 고지 · 기준일 ${esc(r.as_of)}</span></summary><p>${esc(r.notice || "")}</p></details>
+    ${sources.length ? `<details><summary><span>쓴 자료 ${sources.length}개</span></summary><p>${sources.map((x) => esc(x.name)).join(" · ")}</p></details>` : ""}
+    <p class="muted">자세한 기록과 PDF는 자리실사 앱에서 볼 수 있어요.</p>
+  </div>`));
+  document.title = `${address} ${floor} — 자리실사`;
 }
 
 (async () => {
   const k = new URLSearchParams(location.search).get("k");
   const app = document.getElementById("app");
-  if (!k) { app.innerHTML = `<div class="wrap err">자리 주소가 없는 링크예요. 앱에서 다시 공유해 주세요.</div>`; return; }
+  if (!k) { app.innerHTML = `<div class="card err">자리 주소가 없는 링크예요. 앱에서 다시 공유해 주세요.</div>`; return; }
   // 앱에서 열기(안드로이드): 앱이 있으면 jarisilsa://spot?k=… 로 그 자리를 열고, 없으면 이 페이지로 돌아와 안내 한 줄을 보인다
   const qs = new URLSearchParams(location.search);
   if (qs.get("noapp") === "1") {
@@ -201,10 +265,10 @@ function render(r) {
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/spot_reports?select=report&spot_key=eq.${encodeURIComponent(k)}`, { headers: { apikey: KEY } });
     const rows = await res.json();
-    if (!res.ok || !rows.length || !rows[0].report) { app.innerHTML = `<div class="wrap err">이 자리 리포트를 찾지 못했어요. 주소가 바뀌었거나 아직 없는 자리예요.</div>`; return; }
+    if (!res.ok || !rows.length || !rows[0].report) { app.innerHTML = `<div class="card err">이 자리의 리포트가 없어요. 앱에서 주소로 다시 찾아 보세요.</div>`; return; }
     render(rows[0].report);
   } catch (e) {
-    app.innerHTML = `<div class="wrap err">리포트를 불러오지 못했어요. 잠시 뒤 다시 열어 주세요.</div>`;
+    app.innerHTML = `<div class="card err">리포트를 불러오지 못했어요. 인터넷 연결을 확인하고 다시 열어 주세요.</div>`;
   }
 })();
 </script>
