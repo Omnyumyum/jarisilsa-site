@@ -24,6 +24,11 @@
   header.top .wrap { display: flex; justify-content: space-between; align-items: center; height: 56px; }
   .wordmark { font-weight: 700; font-size: 18px; color: var(--navy); text-decoration: none; }
   .meta { font-size: 13px; color: var(--ink3); }
+  /* 앱에서 열기: 안드로이드에서만 보인다(누르는 영역 44px) */
+  .openapp { display: inline-flex; align-items: center; height: 44px; padding: 0 2px; font-size: 14px; font-weight: 600; color: var(--navy); text-decoration: none; }
+  .openapp[hidden] { display: none; }
+  .noapp { background: var(--surface); border-bottom: 1px solid var(--line); padding: 10px 0; color: var(--ink2); font-size: 14px; }
+  .noapp[hidden] { display: none; }
   section { background: var(--surface); margin-top: 8px; padding: 22px 0; }
   .addr { color: var(--ink3); font-size: 14px; margin: 0 0 8px; }
   h1 { font-size: clamp(26px, 6vw, 34px); line-height: 1.25; margin: 0; letter-spacing: -0.03em; }
@@ -65,7 +70,8 @@
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap"><a class="wordmark" href="./">자리실사</a><span class="meta">자리 이력 리포트</span></div></header>
+<header class="top"><div class="wrap"><a class="wordmark" href="./">자리실사</a><span class="meta" id="meta">자리 이력 리포트</span><a class="openapp" id="openapp" hidden>앱에서 열기</a></div></header>
+<div class="noapp" id="noapp" hidden><div class="wrap">자리실사 앱이 설치돼 있지 않아 웹에서 보여 드려요.</div></div>
 <main id="app"><div class="wrap err">리포트를 불러오는 중…</div></main>
 <footer><div class="wrap">공공데이터와 정보공개청구 자료로 만든 참고 통계입니다. 중개대상물 확인·설명 자료나 공적 증명서를 대신하지 않습니다. 상호는 일부를 가려 보여 줍니다.<br><a href="privacy.html">개인정보처리방침</a> · <a href="terms.html">이용약관</a></div></footer>
 <script>
@@ -181,6 +187,17 @@ function render(r) {
   const k = new URLSearchParams(location.search).get("k");
   const app = document.getElementById("app");
   if (!k) { app.innerHTML = `<div class="wrap err">자리 주소가 없는 링크예요. 앱에서 다시 공유해 주세요.</div>`; return; }
+  // 앱에서 열기(안드로이드): 앱이 있으면 jarisilsa://spot?k=… 로 그 자리를 열고, 없으면 이 페이지로 돌아와 안내 한 줄을 보인다
+  const qs = new URLSearchParams(location.search);
+  if (qs.get("noapp") === "1") {
+    document.getElementById("noapp").hidden = false;
+  } else if (/Android/i.test(navigator.userAgent)) {
+    const back = location.origin + location.pathname + "?k=" + encodeURIComponent(k) + "&noapp=1";
+    const link = document.getElementById("openapp");
+    link.href = "intent://spot?k=" + encodeURIComponent(k) + "#Intent;scheme=jarisilsa;package=com.jarisilsa.app;S.browser_fallback_url=" + encodeURIComponent(back) + ";end";
+    link.hidden = false;
+    document.getElementById("meta").hidden = true;
+  }
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/spot_reports?select=report&spot_key=eq.${encodeURIComponent(k)}`, { headers: { apikey: KEY } });
     const rows = await res.json();
