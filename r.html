@@ -125,6 +125,19 @@ function hiddenChanges(r) {
   return { recent, earlier: all - recent, years: s?.years || 10 };
 }
 
+// 서버 체크리스트 문구를 쉬운 말로(앱의 ChecklistItem.plain()과 같은 바꿈 — 말만 바꾸고 조문·건수는 그대로)
+function plainCheck(c) {
+  const d = String(c.detail || "");
+  if (c.id === "succession_sanction") return { ...c, title: "넘겨받으면 이어지는 처분", detail: d
+    .replace("영업을 양수하면 종전 영업자의 행정처분 효과가 처분기간이 끝난 날부터 1년간 이어집니다", "가게를 넘겨받으면 앞 주인이 받은 행정처분의 효과가 처분 기간이 끝난 날부터 1년 동안 이어집니다")
+    .replace("현재 가게의 해당 처분:", "지금 가게에 이어지는 처분:") };
+  if (c.id === "succession_procedure") return { ...c, title: "넘겨받는 신고(지위승계 신고) 준비", detail: d
+    .replace("지위승계 신고 때", "넘겨받는 신고(지위승계 신고)를 할 때").replace("현재 시설기준", "지금 시설기준") };
+  if (c.id === "repeat_failure") return { ...c, detail: d.replace("업종 적합도를 함께 보세요", "업종별 2년 넘게 영업한 비율을 함께 보세요") };
+  if (c.id === "grade_c") return { ...c, title: "층을 확인하지 못한 자리" };
+  return c;
+}
+
 function lanes(r) {
   const bySlot = new Map();
   (r.shops || []).forEach((s) => { const k = s.slot ?? s.shop_no; if (!bySlot.has(k)) bySlot.set(k, []); bySlot.get(k).push(s); });
@@ -209,7 +222,7 @@ function render(r) {
   const heroTitle = `최근 ${hc.years}년 가게 ${fmt(shops)}곳`;
   const status = spot.open_shops ? `지금 ${spot.open_shops}곳 영업 중` : "지금 영업 중인 가게 없음";
   const sc = r.sanctions;
-  const checks = (r.checklist || []).slice(0, 5);
+  const checks = (r.checklist || []).slice(0, 5).map(plainCheck);
   const sources = r.sources || [];
 
   // 머리판: 주인만 바뀐 때가 있으면 그 횟수가 제목(형광펜은 여기 한 곳), 없거나 큰 층이면 가게 수와 영업 여부
