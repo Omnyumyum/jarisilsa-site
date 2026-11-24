@@ -213,6 +213,28 @@ function nearby(r) {
     </table></div>`;
 }
 
+// 가까운 교통·주차장(context.access): 서버는 건물에서 잰 직선거리만 준다. 걷는 시간은 시속 4km(1분에 67m)로 어림하고 그렇게 밝힌다
+function access(r) {
+  const a = r.context?.access;
+  if (!a) return "";
+  const dist = (m) => m >= 1000 ? (m / 1000).toFixed(1) + "km" : m + "m";
+  const walk = (m) => Math.max(1, Math.ceil(m / 67));
+  const s0 = (a.subway || [])[0], s1 = (a.subway || [])[1], b = a.bus, p = a.parking;
+  const station = (s) => esc(s.name) + (s.lines?.length ? `(${esc(s.lines.join("·"))})` : "");
+  const rows = [
+    ["지하철", s0 ? station(s0) : "1.5km 안에 지하철역이 없어요",
+      s0 ? [`직선 ${dist(s0.distance_m)}`, `걸어서 약 ${walk(s0.distance_m)}분`, s1 ? `다음은 ${esc(s1.name)} ${dist(s1.distance_m)}` : null] : []],
+    ["버스", b ? esc(b.name) : "1km 안에 정류장이 없어요",
+      b ? [`직선 ${dist(b.distance_m)}`, `걸어서 약 ${walk(b.distance_m)}분`, b.count > 0 ? `${b.within_m}m 안 정류장 ${b.count}곳` : null] : []],
+    ["공영주차장", p ? esc(p.name) : "1km 안에 공영주차장이 없어요",
+      p ? [`직선 ${dist(p.distance_m)}`, p.spaces ? `${p.spaces}면` : null, p.paid == null ? null : (p.paid ? "유료" : "무료"),
+           p.kind === "노상" ? "길가 주차(노상)" : null, p.count > 1 ? `${p.within_m}m 안 ${p.count}곳` : null] : []],
+  ];
+  return `<div class="card"><h2>가까운 교통·주차장</h2>
+    <table>${rows.map(([l, v, sub]) => `<tr><td>${l}</td><td><b>${v}</b>${sub.filter(Boolean).length ? `<br><span class="muted">${sub.filter(Boolean).join(" · ")}</span>` : ""}</td></tr>`).join("")}</table>
+    <p class="muted">건물에서 잰 직선거리예요. 걷는 시간은 직선거리를 시속 4km로 어림한 값이라, 실제 길로는 더 걸려요.${a.as_of ? ` 서울 열린데이터광장 · ${esc(a.as_of)}` : ""}</p></div>`;
+}
+
 function render(r) {
   const s = r.summary || {}, spot = r.spot;
   const floor = spot.floor_label || "";
@@ -250,6 +272,7 @@ function render(r) {
   </div>
   ${pairs(r) ? `<div class="card">${pairs(r)}</div>` : ""}
   ${nearby(r)}
+  ${access(r)}
   <div class="card"><h2>행정처분</h2><p class="lead" style="margin:0">${sc ? (sc.spot_total ? `이 자리 처분 ${sc.spot_total}건${sc.current_shop ? ` · 지금 가게 ${sc.current_shop.count}건 · 넘겨받으면 이어지는 처분 ${sc.current_shop.inheritable_1y}건` : ""}` : "확인된 처분 없음") : "자료 없음"}</p></div>
   ${checks.length ? `<div class="card"><h2>계약 전에 꼭 볼 것</h2>${checks.map((c) => `<details><summary${c.level && c.level !== "check" ? ' class="warn"' : ""}><span>${esc(c.title)}</span></summary><p>${esc(c.detail)}</p></details>`).join("")}</div>` : ""}
   <div class="card foot">
