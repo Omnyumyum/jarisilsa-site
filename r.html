@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="only light">
 <meta name="robots" content="noindex">
-<title>자리 리포트 — 자리실사</title>
+<title>자리 리포트 — 권리보감</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
   /* 앱과 같은 색: 먹색 머리판과 글자, 안개색 바탕 위 둥근 흰 판, 초록은 지금 영업 중·이 자리 값에만, 형광펜은 제목의 '주인만 N번' 한 곳에만 */
@@ -97,11 +97,11 @@
 </head>
 <body>
 <header class="ink"><div class="wrap">
-  <div class="topline"><a class="wordmark" href="./">자리실사</a><span class="meta" id="meta">자리 이력 리포트</span><a class="openapp" id="openapp" hidden>앱에서 열기</a></div>
+  <div class="topline"><a class="wordmark" href="./">권리보감</a><span class="meta" id="meta">자리 이력 리포트</span><a class="openapp" id="openapp" hidden>앱에서 열기</a></div>
   <div id="head"></div>
 </div></header>
 <main><div class="wrap">
-  <div class="card noapp" id="noapp" hidden>자리실사 앱이 설치돼 있지 않아 웹에서 보여 드려요.</div>
+  <div class="card noapp" id="noapp" hidden>권리보감 앱이 설치돼 있지 않아 웹에서 보여 드려요.</div>
   <div id="app"><div class="card err">리포트를 불러오는 중…</div></div>
 </div></main>
 <footer><div class="wrap">공공데이터와 정보공개청구 자료로 만든 참고 통계입니다. 중개대상물 확인·설명 자료나 공적 증명서를 대신하지 않습니다. 상호는 일부를 가려 보여 줍니다.<br><a href="privacy.html">개인정보처리방침</a> · <a href="terms.html">이용약관</a></div></footer>
@@ -278,9 +278,9 @@ function render(r) {
   <div class="card foot">
     <details><summary><span>법적 고지 · 기준일 ${esc(r.as_of)}</span></summary><p>${esc(r.notice || "")}</p></details>
     ${sources.length ? `<details><summary><span>쓴 자료 ${sources.length}개</span></summary><p>${sources.map((x) => esc(x.name)).join(" · ")}</p></details>` : ""}
-    <p class="muted">자세한 기록과 PDF는 자리실사 앱에서 볼 수 있어요.</p>
+    <p class="muted">자세한 기록과 PDF는 권리보감 앱에서 볼 수 있어요.</p>
   </div>`));
-  document.title = `${address} ${floor} — 자리실사`;
+  document.title = `${address} ${floor} — 권리보감`;
 }
 
 (async () => {
